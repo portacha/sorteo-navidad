@@ -1,32 +1,41 @@
 // Array de imágenes de premios
 // Si las imágenes están en la misma carpeta que este archivo, deja el prefijo como está
 let token;
+let responseCheckCode;
 $('#tokenModal').modal('show');
 //check if the token is not empty when clic on #tokenButton
-$('#tokenButton').click(function(){
-    if($('#tokenInput').val() == ""){
+$('#tokenButton').click(async function(){
+    let token = $('#tokenInput').val();
+    let name = $('#nameImput').val();
+    if(token == ""){
         $('#tokenInput').addClass('is-invalid');
+    }else if(name == ""){
+        $('#nameImput').addClass('is-invalid');
     }else{
+        responseCheckCode = await checkCode(token, name);
         $('#tokenModal').modal('hide');
+        if(!responseCheckCode.is_valid && responseCheckCode.prize != null){
+            $('#tokenUsado').modal('show');
+            $("#tokenUsadoData").html("Token usado por: "+responseCheckCode.prize.nombre);
+            animationRandom(responseCheckCode.prize.imagen, 2000, true);
+        }else if(!responseCheckCode.is_valid && responseCheckCode.prize == null){
+            $('#tokenInvalido').modal('show');
+            $('#tokenReButton').click(function(){
+                $('#tokenInvalido').modal('hide');
+                $('#tokenModal').modal('show');
+            });
+        }
     }
 });
 
 
 
 let prefix = "./images/";
-const prizes = [
-    'slideImage (1).jpg',
-    'https://previews.123rf.com/images/farang/farang1206/farang120600017/13941740-puesta-del-sol-escena-disparo-de-larga-exposici%C3%B3n-composici%C3%B3n-panor%C3%A1mica-vertical-hdr.jpg',
-    'slideImage (3).jpg',
-    'slideImage (4).jpg',
-    'https://mlaxuzdwqkiz.i.optimole.com/cnaNF2M-cUl3qoZn/w:748/h:420/q:90/https://lovenoho.com/wp-content/uploads/2021/04/looono.png',
-    // Agrega más imágenes según sea necesario
-];
-const allPrices = [...prizes];
-
 // Controlador de eventos para el botón de rifa
 document.getElementById('raffleButton').addEventListener('click', async function () {
+    const prizes = await getAllPrizes();
     if (prizes.length > 0) {
+        const allPrices = [...prizes];
         // Selecciona aleatoriamente un premio
         let randomIndex;
         let selectedPrize;
@@ -43,19 +52,8 @@ document.getElementById('raffleButton').addEventListener('click', async function
         for (let i = 0; i < randomCicles; i++) {
             let winner = false;
             if (randomCicles == i + 1) {
-                randomIndex = Math.floor(Math.random() * prizes.length);
-                if (randomIndex == randomIndexAfter){
-                    while (randomIndex == randomIndexAfter && prizes.length > 1) {
-                        randomIndex = Math.floor(Math.random() * prizes.length);
-                    }
-                }
-                randomIndexAfter = randomIndex;
-                if(allPrices[randomIndex].startsWith("http")){
-                    selectedPrize = prizes[randomIndex];
-                }else{
-                    selectedPrize = prefix + prizes[randomIndex];
-                }                
-                console.log("Prize: " + prizes[randomIndex])
+                selectedPrize = responseCheckCode.prize.imagen;
+                console.log("Prize: " + prizes[randomIndex].id)
                 winner = true;
             } else {
                 randomIndex = Math.floor(Math.random() * allPrices.length);
@@ -68,13 +66,13 @@ document.getElementById('raffleButton').addEventListener('click', async function
                 }
                 randomIndexAfter = randomIndex;
                 // if allPrices[randomIndex] being with http or https, then it is a url
-                if(allPrices[randomIndex].startsWith("http")){
-                    selectedPrize = allPrices[randomIndex];
+                if(allPrices[randomIndex].imagen.startsWith("http")){
+                    selectedPrize = allPrices[randomIndex].imagen;
                 }else{
-                    selectedPrize = prefix + allPrices[randomIndex];
+                    selectedPrize = prefix + allPrices[randomIndex].imagen;
                 }
             }
-            console.log("ciclo:" + i + " randomIndex: " + randomIndex + " randomIndexAfter: " + randomIndexAfter )
+            //console.log("ciclo:" + i + " randomIndex: " + randomIndex + " randomIndexAfter: " + randomIndexAfter )
             // Ajusta la desaceleración cuadrática aquí
             let tiempoDeEspera = desaceleracion * Math.pow(i, 2) + tiempoPorCiclo * (i +10);
             animationRandom(selectedPrize, tiempoDeEspera, winner);
@@ -107,8 +105,8 @@ function animationRandom(selectedPrize, tiempoDeEspera, winner) {
                 element.style = 'opacity: 1; transition:' +tiempoDeEspera/5000+'s; transform: scale(1); transform: translateY(0px);';
                 if (winner) {
                     setTimeout(() => {
+                        $('#tokenUsado').modal('hide');
                         $('#exampleModal').modal('show');
-
                     }, tiempoDeEspera/2);
     
                 }
@@ -116,9 +114,46 @@ function animationRandom(selectedPrize, tiempoDeEspera, winner) {
             // se agrega el fade out
             
             element.innerHTML = '<img src="' + selectedPrize + '" class="img-fluid" alt="Premio">';
-
         }, tiempoDeEspera);
     });
 
 
 }
+
+async function getAllPrizes() {
+    try {
+        const response = await fetch('/api/get-all-prizes');
+        return await response.json().then(data => {
+            console.log(data.todos_los_premios);
+            return data.todos_los_premios;
+        });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+async function checkCode(code, name) {
+    try {
+        const response = await fetch(`/api/check-code?code=${code}&name=${name}`);
+        const data = await response.json();
+        console.log(data);
+        return data; // Devuelve el valor recibido de la respuesta
+    } catch (error) {
+        console.error('Error checking code:', error);
+    }
+}
+
+
+async function getWinners() {
+    try {
+        const response = await fetch('/api/get-winners');
+        return response.json().then(data => {
+            console.log(data);
+            // Puedes agregar más lógica aquí si es necesario
+        });
+    } catch (error) {
+        console.error('Error fetching winners:', error);
+    }
+}
+
+

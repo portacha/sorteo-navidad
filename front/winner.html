@@ -71,7 +71,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <h2 class="felizidades-text"> ¡Digital Architecture te felicita!, ¡haz ganado el premio del la imagen!</h2>
+                    <h2 class="felizidades-text"> ¡Digital Architecture te felicita!, ¡haz ganado el premio del la
+                        imagen!</h2>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -86,15 +87,49 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tokenModalLabel">Mensaje en el Modal</h5>
-                    </button>
+                    <h4>Ingresa el codigo y tu nombre para participar en la rifa </h4>
                 </div>
                 <div class="modal-body">
-                    Ingresa el codigo para participar en la rifa
-                    <input type="text" class="form-control" id="tokenInput" placeholder="Codigo">
+                    <label for="tokenInput">Codigo</label>
+                    <input type="text" class="form-control" id="tokenInput" placeholder="Codigo"><br>
+                    <label for="nameImput">Nombre</label>
+                    <input type="text" class="form-control" id="nameImput" placeholder="Nombre">
                     <button type="button" class="btn btn-primary mt-4" id="tokenButton">Enviar</button>
                 </div>
                 <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal token USADO-->
+    <div class="modal fade" id="tokenUsado" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Tu token ya se ha usado</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>                </div>
+                <div class="modal-footer">
+                    <p id="tokenUsadoData">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="tokenInvalido" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Tu token no es valido</h4>
+                </div>
+                <div class="modal-footer">
+                    <!-- boton para reintentar -->
+                    <button type="button" class="btn btn-primary mt-4" id="tokenReButton">Reintentar</button>
                 </div>
             </div>
         </div>
@@ -106,6 +141,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <!-- JS custom -->
+    <script src="js/services.js"></script>
     <script src="js/rifa.js"></script>
 </body>
 
