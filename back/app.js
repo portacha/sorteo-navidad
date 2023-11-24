@@ -2,11 +2,11 @@ const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('miBaseDeDatos.db');
 const winners = ['abcd', 'efgh', 'ijkl', 'mnop', 'qrst'];
 const premios = [
-'https://www.muycomputer.com/wp-content/uploads/2023/01/Nintendo-Switch-OLED.jpg',
-'https://www.steren.com.mx/media/catalog/product/cache/0236bbabe616ddcff749ccbc14f38bf2/image/20986abca/audifonos-bluetooth-con-bateria-de-hasta-30-h.jpg',
-'https://www.fotomecanica.mx/media/catalog/product/cache/243b585d5b053344651ac1ff3b7a4649/1/5/1561866720000_1346735.jpg',
-'https://m.media-amazon.com/images/I/81BT4absZ5L._AC_UF894,1000_QL80_.jpg',
-'https://cdn1.coppel.com/images/catalog/pm/2107923-1.jpg'
+  'https://www.muycomputer.com/wp-content/uploads/2023/01/Nintendo-Switch-OLED.jpg',
+  'https://www.steren.com.mx/media/catalog/product/cache/0236bbabe616ddcff749ccbc14f38bf2/image/20986abca/audifonos-bluetooth-con-bateria-de-hasta-30-h.jpg',
+  'https://www.fotomecanica.mx/media/catalog/product/cache/243b585d5b053344651ac1ff3b7a4649/1/5/1561866720000_1346735.jpg',
+  'https://m.media-amazon.com/images/I/81BT4absZ5L._AC_UF894,1000_QL80_.jpg',
+  'https://cdn1.coppel.com/images/catalog/pm/2107923-1.jpg'
 ];
 // if number of winners is greater than number of prizes then stop server
 if (winners.length != premios.length) {
@@ -72,9 +72,14 @@ app.get('/api/check-code', async (req, res) => {
       isValid.prize.premio = randPrize.premio.id;
       isValid.prize.imagen = randPrize.premio.imagen;
       res.json({ is_valid: isValid.response, message: isValid.message, prize: isValid.prize });
-    }else{
-      isValid.prize.imagen = await get_image(isValid.prize.premio);
-      res.json({ is_valid: isValid.response, message: isValid.message, prize: isValid.prize });
+    } else {
+      console.log(isValid)
+      if (isValid.prize == null) {
+        res.json({ is_valid: isValid.response, message: isValid.message, prize: null });
+      } else {
+        isValid.prize.imagen = await get_image(isValid.prize.premio);
+        res.json({ is_valid: isValid.response, message: isValid.message, prize: isValid.prize });
+      }
     }
   } catch (error) {
     console.error(error);
