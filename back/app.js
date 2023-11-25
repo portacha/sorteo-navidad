@@ -1,4 +1,15 @@
 const sqlite3 = require('sqlite3').verbose();
+const http = require('http');
+const express = require('express')
+
+const app = express()
+const port = 3000
+const server = http.createServer(app);
+const socketIo = require('socket.io');
+const io = socketIo(server).listen(server);
+
+
+
 const db = new sqlite3.Database('miBaseDeDatos.db');
 const winners = ['abcd', 'efgh', 'ijkl', 'mnop', 'qrst'];
 const premios = [
@@ -36,10 +47,6 @@ db.serialize(() => {
   });
 });
 
-const express = require('express')
-const app = express()
-const port = 3000
-
 app.use(express.static('./../front'));
 
 
@@ -66,11 +73,13 @@ app.get('/api/check-code', async (req, res) => {
       const code = req.query.code;
       const name = req.query.name;
       let randPrize = await get_random_prize(code, name);
+      // Enviar notificacion al cliente
       isValid.prize = {};
       isValid.prize.id = randPrize.code;
       isValid.prize.nombre = randPrize.name;
       isValid.prize.premio = randPrize.premio.id;
       isValid.prize.imagen = randPrize.premio.imagen;
+      io.emit('notificacion', isValid.prize);
       res.json({ is_valid: isValid.response, message: isValid.message, prize: isValid.prize });
     } else {
       console.log(isValid)
@@ -92,14 +101,6 @@ app.get('/api/get-winners', async (req, res) => {
     winners: await get_winners()
   });
 });
-
-
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`)
-})
-
-
-
 
 function get_premios(callback) {
   let todos = [];
@@ -236,3 +237,29 @@ async function get_image(id) {
     });
   });
 }
+
+/* WebSoket parra webhook*/
+io.on('connection', (socket) => {
+  console.log('Cliente conectado');
+
+  // Manejar eventos del cliente
+  socket.on('notificacion', (mensaje) => {
+    console.log('Notificación recibida:', mensaje);
+
+    // Enviar la notificación a todos los clientes conectados
+    io.emit('notificacion', mensaje);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Cliente desconectado');
+  });
+});
+
+server.listen(3000, () => {
+  console.log('Servidor escuchando en http://localhost:3000');
+});
+/* Fin de la aplicacion */
+
+// app.listen(port, () => {
+//   console.log(`App listening on port ${port}`)
+// })

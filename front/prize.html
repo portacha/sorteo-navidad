@@ -22,40 +22,37 @@
             /* Ajusta este valor para el nivel de zoom deseado */
         }
     </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 </head>
 
 <body>
     <!-- Background -->
     <div class="context">
+        <h1>Ganadores</h1>
         <!-- Contenedor principal -->
         <div class="container mt-4">
 
             <!-- Sección de imágenes -->
-            <div class="row">
-                <div class="col-md-2 mb-4 zoom-img" onmouseover="cambiarImagen('images/slideImage (1).jpg')"
-                    onclick="cambiarImagen('images/slideImage (1).jpg')">
+            <div class="row" id="premios">
+                <div class="col-md-2 mb-4 zoom-img" onmouseover="cambiarImagen(event)" onclick="cambiarImagen(event)">
                     <img src="images/slideImage (1).jpg" class="img-fluid fixed-size-img" alt="Imagen 1">
-                    <h5 class="mt-2">Título de la Imagen 1</h5>
+                    <h5 class="mt-2">Premio 1</h5>
                 </div>
-                <div class="col-md-2 mb-4 zoom-img" onmouseover="cambiarImagen('images/slideImage (2).jpg')"
-                    onclick="cambiarImagen('images/slideImage (2).jpg')">
-                    <img src="images/slideImage (2).jpg" class="img-fluid fixed-size-img" alt="Imagen 2">
-                    <h5 class="mt-2">Título de la Imagen 2</h5>
+                <div class="col-md-2 mb-4 zoom-img" onmouseover="cambiarImagen(event)" onclick="cambiarImagen(event)">
+                    <img src="images/slideImage (2).jpg" class="img-fluid fixed-size-img" alt="Imagen 1">
+                    <h5 class="mt-2">Premio 2</h5>
                 </div>
-                <div class="col-md-2 mb-4 zoom-img" onmouseover="cambiarImagen('images/slideImage (3).jpg')"
-                    onclick="cambiarImagen('images/slideImage (3).jpg')">
-                    <img src="images/slideImage (3).jpg" class="img-fluid fixed-size-img" alt="Imagen 3">
-                    <h5 class="mt-2">Título de la Imagen 3</h5>
+                <div class="col-md-2 mb-4 zoom-img" onmouseover="cambiarImagen(event)" onclick="cambiarImagen(event)">
+                    <img src="images/slideImage (3).jpg" class="img-fluid fixed-size-img" alt="Imagen 1">
+                    <h5 class="mt-2">Premio 3</h5>
                 </div>
-                <div class="col-md-2 mb-4 zoom-img" onmouseover="cambiarImagen('images/slideImage (4).jpg')"
-                    onclick="cambiarImagen('images/slideImage (4).jpg')">
-                    <img src="images/slideImage (4).jpg" class="img-fluid fixed-size-img" alt="Imagen 4">
-                    <h5 class="mt-2">Título de la Imagen 4</h5>
+                <div class="col-md-2 mb-4 zoom-img" onmouseover="cambiarImagen(event)" onclick="cambiarImagen(event)">
+                    <img src="images/slideImage (4).jpg" class="img-fluid fixed-size-img" alt="Imagen 1">
+                    <h5 class="mt-2">Premio 4</h5>
                 </div>
-                <div class="col-md-2 mb-4 zoom-img" onmouseover="cambiarImagen('images/slideImage (5).jpg')"
-                    onclick="cambiarImagen('images/slideImage (5).jpg')">
-                    <img src="images/slideImage (5).jpg" class="img-fluid fixed-size-img" alt="Imagen 5">
-                    <h5 class="mt-2">Título de la Imagen 5</h5>
+                <div class="col-md-2 mb-4 zoom-img" onmouseover="cambiarImagen(event)" onclick="cambiarImagen(event)">
+                    <img src="images/slideImage (5).jpg" class="img-fluid fixed-size-img" alt="Imagen 1">
+                    <h5 class="mt-2">Premio 5</h5>
                 </div>
             </div>
 
@@ -63,7 +60,7 @@
             <div class="row">
                 <div class="col-md-7">
                     <img id="imagenInferior" src="images/slideImage (1).jpg" class="img-fluid" alt="Imagen 6">
-                    <h5 class="mt-2">Título de la Imagen 6</h5>
+                    <h5 class="mt-2" id="nombrePremio">Ganador</h5>
                     <p class="instruccion"></p>
                     <button type="button" class="btn btn-primary mt-4" data-toggle="modal" data-target="#exampleModal">
                         Abrir Modal
@@ -72,11 +69,11 @@
                 <div class="col-md-5">
                     <h5 class="mt-2">Descripcion de la actividad</h5>
                     <p class="instrucciones">
-                        <ul class="instrucciones-ul">
-                            <li>1. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</li>
-                            <li>2. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</li>
-                            <li>3. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</li>
-                        </ul>
+                    <ul class="instrucciones-ul">
+                        <li>1. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</li>
+                        <li>2. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</li>
+                        <li>3. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</li>
+                    </ul>
                     </p>
                 </div>
             </div>
@@ -102,39 +99,32 @@
         </ul>
     </div>
 
-    
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Mensaje en el Modal</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            ¡Hola! Este es un mensaje dentro del modal.
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="winner">¡¡Nuevo ganador en DA!!</h3>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¡Hola! Este es un mensaje dentro del modal.
                 </div>
             </div>
+        </div>
+    </div>
 
     <!-- Bootstrap JS (requerido para los componentes con JavaScript) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-    <script>
-        function cambiarImagen(ruta) {
-            document.getElementById("imagenInferior").src = ruta;
-        }
-    </script>
-
+    <script src = "js/prize.js"></script>
 </body>
 
 </html>

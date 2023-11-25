@@ -2,6 +2,8 @@
 // Si las imágenes están en la misma carpeta que este archivo, deja el prefijo como está
 let token;
 let responseCheckCode;
+let prefix = "./images/";
+
 $('#tokenModal').modal('show');
 //check if the token is not empty when clic on #tokenButton
 $('#tokenButton').click(async function(){
@@ -30,7 +32,6 @@ $('#tokenButton').click(async function(){
 
 
 
-let prefix = "./images/";
 // Controlador de eventos para el botón de rifa
 document.getElementById('raffleButton').addEventListener('click', async function () {
     const prizes = await getAllPrizes();
